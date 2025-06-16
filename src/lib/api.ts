@@ -91,3 +91,50 @@ export async function refreshTokens(
 
   return response.json();
 }
+
+export interface Board {
+  id: number;
+  name: string;
+  description: string;
+  posts: number;
+  created_at: string;
+}
+
+export async function fetchBoards(): Promise<Board[]> {
+  const response = await fetch(`${API_BASE_URL}/boards/all_boards`);
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch boards');
+  }
+
+  return response.json();
+}
+
+export interface PostSummary {
+  id: number;
+  board_id: number;
+  title: string;
+  author: {
+    id: number;
+    username: string;
+  };
+  created_at: string;
+}
+
+export async function fetchPostsByBoard(
+  boardId: number,
+  params?: { page?: number; size?: number },
+): Promise<PostSummary[]> {
+  const search = new URLSearchParams();
+  if (params?.page) search.append('page', String(params.page));
+  if (params?.size) search.append('size', String(params.size));
+  const query = search.toString();
+  const url = `${API_BASE_URL}/posts/boards/${boardId}/posts${query ? `?${query}` : ''}`;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch posts');
+  }
+
+  return response.json();
+}
