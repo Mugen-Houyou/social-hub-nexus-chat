@@ -1,7 +1,5 @@
 
-import { useState, useContext } from 'react';
-import { Navigate } from 'react-router-dom';
-import { AuthContext } from '@/context/AuthContext';
+import { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import Dashboard from '@/components/Dashboard';
 import Posts from '@/components/Posts';
@@ -11,12 +9,7 @@ import Notifications from '@/components/Notifications';
 import VoiceCall from '@/components/VoiceCall';
 
 const Index = () => {
-  const { isAuthenticated } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('dashboard');
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
 
   const renderContent = () => {
     switch (activeTab) {
