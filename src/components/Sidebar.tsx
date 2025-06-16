@@ -13,7 +13,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
     { id: 'messages', icon: MessageSquare, label: 'DM' },
     { id: 'profile', icon: User, label: '프로필' },
     { id: 'notifications', icon: Bell, label: '알림' },
-    { id: 'voice', icon: Phone, label: '음성통화' },
+    { id: 'voice', icon: Phone, label: '보이스 채널' },
   ];
 
   return (
