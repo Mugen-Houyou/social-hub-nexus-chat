@@ -154,6 +154,7 @@ export interface Post extends PostSummary {
 export async function createPost(
   boardId: number,
   payload: CreatePostPayload,
+  token?: string,
 ): Promise<Post> {
   const response = await fetch(
     `${API_BASE_URL}/posts/boards/${boardId}/posts`,
@@ -161,6 +162,7 @@ export async function createPost(
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify(payload),
     },

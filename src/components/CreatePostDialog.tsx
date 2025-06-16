@@ -38,7 +38,7 @@ interface Props {
 
 const CreatePostDialog = ({ boardId }: Props) => {
   const [open, setOpen] = useState(false);
-  const { isAuthenticated } = useContext(AuthContext);
+  const { isAuthenticated, accessToken } = useContext(AuthContext);
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { title: '', content: '' },
@@ -47,7 +47,11 @@ const CreatePostDialog = ({ boardId }: Props) => {
 
   const mutation = useMutation({
     mutationFn: (values: FormValues) =>
-      createPost(boardId, { ...values, board_id: boardId } as CreatePostPayload),
+      createPost(
+        boardId,
+        { ...values, board_id: boardId } as CreatePostPayload,
+        accessToken ?? undefined,
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts', boardId] });
       toast.success('Post created');
