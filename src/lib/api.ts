@@ -32,3 +32,32 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
 
   return response.json();
 }
+
+export interface RegisterPayload {
+  username: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  password: string;
+}
+
+export async function register(payload: RegisterPayload): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    let message = 'Failed to register';
+    try {
+      const data = await response.json();
+      message = data.detail ?? message;
+    } catch {
+      // ignore
+    }
+    throw new Error(message);
+  }
+}

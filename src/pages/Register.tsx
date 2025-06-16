@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import * as z from 'zod';
-import { login } from '@/lib/api';
+import { register as registerUser } from '@/lib/api';
 import {
   Form,
   FormField,
@@ -18,24 +18,32 @@ import { toast } from '@/components/ui/sonner';
 
 const schema = z.object({
   username: z.string().min(1, 'Enter username'),
+  firstname: z.string().min(1, 'Enter first name'),
+  lastname: z.string().min(1, 'Enter last name'),
+  email: z.string().email('Invalid email'),
   password: z.string().min(1, 'Enter password'),
 });
 
 type FormValues = z.infer<typeof schema>;
 
-const Login = () => {
+const Register = () => {
   const navigate = useNavigate();
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { username: '', password: '' },
+    defaultValues: {
+      username: '',
+      firstname: '',
+      lastname: '',
+      email: '',
+      password: '',
+    },
   });
 
   const mutation = useMutation({
-    mutationFn: login,
-    onSuccess: (data) => {
-      localStorage.setItem('access_token', data.access_token);
-      localStorage.setItem('refresh_token', data.refresh_token);
-      navigate('/');
+    mutationFn: registerUser,
+    onSuccess: () => {
+      toast.success('Registration successful');
+      navigate('/login');
     },
     onError: (err: Error) => toast.error(err.message),
   });
@@ -47,7 +55,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="w-full max-w-sm bg-white p-6 rounded-md shadow">
-        <h1 className="text-xl font-bold mb-4">Login</h1>
+        <h1 className="text-xl font-bold mb-4">Register</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -58,6 +66,45 @@ const Login = () => {
                   <FormLabel>Username</FormLabel>
                   <FormControl>
                     <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="firstname"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>First name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="lastname"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last name</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -77,14 +124,8 @@ const Login = () => {
               )}
             />
             <Button type="submit" className="w-full" disabled={mutation.isPending}>
-              {mutation.isPending ? 'Logging in...' : 'Login'}
+              {mutation.isPending ? 'Registering...' : 'Register'}
             </Button>
-            <p className="text-sm text-center">
-              Don't have an account?{' '}
-              <a href="/register" className="text-blue-500 hover:text-blue-700 underline">
-                Register
-              </a>
-            </p>
           </form>
         </Form>
       </div>
@@ -92,4 +133,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
