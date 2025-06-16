@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '@/context/AuthContext';
 import { useForm } from 'react-hook-form';
@@ -45,8 +45,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-sm bg-white p-6 rounded-md shadow">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+      <div className="w-full max-w-sm bg-gray-800 p-6 rounded-md shadow border border-gray-700">
         <h1 className="text-xl font-bold mb-4">Login</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -81,9 +81,9 @@ const Login = () => {
             </Button>
             <p className="text-sm text-center">
               Don't have an account?{' '}
-              <a href="/register" className="text-blue-500 hover:text-blue-700 underline">
+              <Link to="/register" className="text-blue-400 hover:text-blue-300 underline">
                 Register
-              </a>
+              </Link>
             </p>
           </form>
         </Form>
