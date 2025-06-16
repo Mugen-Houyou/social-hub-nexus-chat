@@ -1,5 +1,8 @@
 
-import { Home, MessageSquare, Users, Bell, Phone, User } from 'lucide-react';
+import { Home, MessageSquare, Users, Bell, Phone, User, LogOut } from 'lucide-react';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '@/context/AuthContext';
 
 interface SidebarProps {
   activeTab: string;
@@ -7,6 +10,9 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const menuItems = [
     { id: 'dashboard', icon: Home, label: '대시보드' },
     { id: 'posts', icon: MessageSquare, label: '게시판' },
@@ -44,7 +50,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
       </nav>
       
       <div className="p-4 border-t border-gray-700">
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 mb-2">
           <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
             <User size={16} />
           </div>
@@ -53,6 +59,16 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
             <p className="text-xs text-gray-400">온라인</p>
           </div>
         </div>
+        <button
+          onClick={() => {
+            logout();
+            navigate('/login');
+          }}
+          className="flex items-center space-x-2 text-red-400 hover:text-red-300 text-sm"
+        >
+          <LogOut size={16} />
+          <span>로그아웃</span>
+        </button>
       </div>
     </div>
   );

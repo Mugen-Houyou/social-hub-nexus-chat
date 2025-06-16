@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '@/context/AuthContext';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import * as z from 'zod';
-import { login } from '@/lib/api';
 import {
   Form,
   FormField,
@@ -25,16 +26,15 @@ type FormValues = z.infer<typeof schema>;
 
 const Login = () => {
   const navigate = useNavigate();
+  const auth = useContext(AuthContext);
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { username: '', password: '' },
   });
 
   const mutation = useMutation({
-    mutationFn: login,
-    onSuccess: (data) => {
-      localStorage.setItem('access_token', data.access_token);
-      localStorage.setItem('refresh_token', data.refresh_token);
+    mutationFn: auth.login,
+    onSuccess: () => {
       navigate('/');
     },
     onError: (err: Error) => toast.error(err.message),
