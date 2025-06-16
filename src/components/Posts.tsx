@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchBoards, fetchPostsByBoard } from '@/lib/api';
+import CreatePostDialog from './CreatePostDialog';
 
 const Posts = () => {
   const [activeBoard, setActiveBoard] = useState<number | null>(null);
@@ -33,9 +34,7 @@ const Posts = () => {
           <h1 className="text-2xl font-bold">게시판</h1>
           <p className="text-gray-400 mt-1">커뮤니티 멤버들과 소통하세요</p>
         </div>
-        <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors">
-          새 글 작성
-        </button>
+        {activeBoard !== null && <CreatePostDialog boardId={activeBoard} />}
       </div>
 
       <div className="flex space-x-4 mb-6">

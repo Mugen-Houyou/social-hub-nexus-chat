@@ -138,3 +138,44 @@ export async function fetchPostsByBoard(
 
   return response.json();
 }
+
+export interface CreatePostPayload {
+  title: string;
+  content: string;
+  board_id: number;
+}
+
+export interface Post extends PostSummary {
+  content: string;
+  files: unknown[];
+  updated_at: string;
+}
+
+export async function createPost(
+  boardId: number,
+  payload: CreatePostPayload,
+): Promise<Post> {
+  const response = await fetch(
+    `${API_BASE_URL}/posts/boards/${boardId}/posts`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    },
+  );
+
+  if (!response.ok) {
+    let message = 'Failed to create post';
+    try {
+      const data = await response.json();
+      message = data.detail ?? message;
+    } catch {
+      // ignore
+    }
+    throw new Error(message);
+  }
+
+  return response.json();
+}
