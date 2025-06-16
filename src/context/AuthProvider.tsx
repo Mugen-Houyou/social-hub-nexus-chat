@@ -1,22 +1,7 @@
-import { createContext, useState, useEffect, ReactNode } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import type { LoginPayload, LoginResponse } from '@/lib/api';
 import { login as loginRequest } from '@/lib/api';
-
-interface AuthContextValue {
-  accessToken: string | null;
-  refreshToken: string | null;
-  isAuthenticated: boolean;
-  login: (payload: LoginPayload) => Promise<void>;
-  logout: () => void;
-}
-
-export const AuthContext = createContext<AuthContextValue>({
-  accessToken: null,
-  refreshToken: null,
-  isAuthenticated: false,
-  login: async () => {},
-  logout: () => {},
-});
+import { AuthContext } from './AuthContext';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);

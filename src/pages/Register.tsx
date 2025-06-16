@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import * as z from 'zod';
-import { register as registerUser } from '@/lib/api';
+import { signup as registerUser } from '@/lib/api';
 import {
   Form,
   FormField,
