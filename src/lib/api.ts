@@ -145,9 +145,14 @@ export interface CreatePostPayload {
   board_id: number;
 }
 
+export interface FileMeta {
+  id: number;
+  filename?: string;
+}
+
 export interface Post extends PostSummary {
   content: string;
-  files: unknown[];
+  files: FileMeta[];
   updated_at: string;
 }
 
@@ -177,6 +182,43 @@ export async function createPost(
       // ignore
     }
     throw new Error(message);
+  }
+
+  return response.json();
+}
+
+export async function fetchPost(
+  boardId: number,
+  postId: number,
+): Promise<Post> {
+  const response = await fetch(
+    `${API_BASE_URL}/posts/boards/${boardId}/posts/${postId}`,
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch post');
+  }
+
+  return response.json();
+}
+
+export interface Comment {
+  id: number;
+  content: string;
+  depth: number;
+  parent_id: number | null;
+  author: {
+    id: number;
+    username: string;
+  };
+  created_at: string;
+}
+
+export async function fetchComments(postId: number): Promise<Comment[]> {
+  const response = await fetch(`${API_BASE_URL}/posts/${postId}/comments`);
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch comments');
   }
 
   return response.json();

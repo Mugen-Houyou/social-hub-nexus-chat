@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchBoards, fetchPostsByBoard } from '@/lib/api';
 import CreatePostDialog from './CreatePostDialog';
 
 const Posts = () => {
   const [activeBoard, setActiveBoard] = useState<number | null>(null);
+  const navigate = useNavigate();
 
   const boardsQuery = useQuery({
     queryKey: ['boards'],
@@ -61,6 +63,9 @@ const Posts = () => {
           <div
             key={post.id}
             className="bg-gray-800 rounded-lg p-6 hover:bg-gray-750 transition-colors cursor-pointer"
+            onClick={() =>
+              navigate(`/boards/${post.board_id}/posts/${post.id}`)
+            }
           >
             <div className="flex items-start space-x-4">
               <div className="flex-1">
