@@ -36,8 +36,14 @@ const Chat = () => {
     const board = boards?.find((b) => b.id === activeBoard);
     if (!board) return;
     const scheme = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const base = import.meta.env.VITE_WS_URL ?? `${scheme}://${window.location.host}/api/v1/ws`;
-    const ws = new WebSocket(`${base}/chat/${encodeURIComponent(board.name)}?username=${encodeURIComponent(username)}`);
+    const base =
+      import.meta.env.VITE_WS_URL ?? `${scheme}://${window.location.host}/api/v1/ws`;
+    const room = `board_id_${board.id}`;
+    const ws = new WebSocket(
+      `${base}/chat/${encodeURIComponent(room)}?username=${encodeURIComponent(
+        username,
+      )}`,
+    );
     wsRef.current = ws;
     ws.onmessage = (event) => {
       try {
