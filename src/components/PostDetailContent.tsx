@@ -151,7 +151,11 @@ const PostDetailContent = ({ boardId, postId }: Props) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Textarea rows={3} {...field} />
+                        <Textarea
+                          rows={3}
+                          placeholder="새 댓글을 달아주세요!"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
