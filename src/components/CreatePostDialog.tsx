@@ -54,6 +54,7 @@ const CreatePostDialog = ({ boardId }: Props) => {
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['posts', boardId] });
+      queryClient.invalidateQueries({ queryKey: ['boards'] });
       toast.success('Post created');
       setOpen(false);
       form.reset();
