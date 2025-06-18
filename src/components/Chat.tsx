@@ -41,7 +41,18 @@ const Chat = () => {
       } catch {
         // ignore JSON parse errors
       }
-      setMessages((prev) => [...prev, { username: 'server', message: event.data }]);
+      if (event.data.startsWith('server:')) {
+        setMessages((prev) => [...prev, { username: 'server', message: event.data.slice(7) }]);
+        return;
+      }
+      const idx = event.data.indexOf(':');
+      if (idx !== -1) {
+        const from = event.data.slice(0, idx).trim();
+        const msg = event.data.slice(idx + 1).trim();
+        setMessages((prev) => [...prev, { username: from, message: msg }]);
+      } else {
+        setMessages((prev) => [...prev, { username: 'server', message: event.data }]);
+      }
     };
     return () => {
       ws.close();
@@ -52,7 +63,6 @@ const Chat = () => {
     if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
     if (!input.trim()) return;
     wsRef.current.send(input);
-    setMessages((prev) => [...prev, { username, message: input }]);
     setInput('');
   };
 
