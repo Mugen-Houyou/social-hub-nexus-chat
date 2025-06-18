@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Paperclip } from "lucide-react";
 import {
   Card,
@@ -9,7 +9,16 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { fetchPost, fetchComments } from "@/lib/api";
+import { fetchPost, fetchComments, createComment } from "@/lib/api";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormField, FormItem, FormControl, FormMessage } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/sonner";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
 
 interface Props {
   boardId: number;
@@ -26,6 +35,33 @@ const PostDetailContent = ({ boardId, postId }: Props) => {
     queryKey: ["comments", postId],
     queryFn: () => fetchComments(postId),
   });
+
+  const { isAuthenticated, accessToken } = useContext(AuthContext);
+  const queryClient = useQueryClient();
+
+  const schema = z.object({
+    content: z.string().min(1, "Enter comment"),
+  });
+
+  type FormValues = z.infer<typeof schema>;
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
+    defaultValues: { content: "" },
+  });
+
+  const mutation = useMutation({
+    mutationFn: (values: FormValues) =>
+      createComment(postId, values, accessToken ?? undefined),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      form.reset();
+      toast.success("Comment posted");
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+
+  const onSubmit = (values: FormValues) => mutation.mutate(values);
 
   const post = postQuery.data;
   const comments = commentsQuery.data ?? [];
@@ -103,6 +139,32 @@ const PostDetailContent = ({ boardId, postId }: Props) => {
               </div>
             ))}
           </ScrollArea>
+          {isAuthenticated ? (
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="mt-4 space-y-2"
+              >
+                <FormField
+                  control={form.control}
+                  name="content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea rows={3} {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full" disabled={mutation.isPending}>
+                  {mutation.isPending ? "Posting..." : "Post"}
+                </Button>
+              </form>
+            </Form>
+          ) : (
+            <p className="mt-4 text-sm text-gray-400">Login to comment.</p>
+          )}
         </CardContent>
       </Card>
     </div>

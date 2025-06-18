@@ -223,3 +223,35 @@ export async function fetchComments(postId: number): Promise<Comment[]> {
 
   return response.json();
 }
+
+export interface CreateCommentPayload {
+  content: string;
+}
+
+export async function createComment(
+  postId: number,
+  payload: CreateCommentPayload,
+  token?: string,
+): Promise<Comment> {
+  const response = await fetch(`${API_BASE_URL}/posts/${postId}/comments`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    let message = 'Failed to create comment';
+    try {
+      const data = await response.json();
+      message = data.detail ?? message;
+    } catch {
+      // ignore
+    }
+    throw new Error(message);
+  }
+
+  return response.json();
+}
