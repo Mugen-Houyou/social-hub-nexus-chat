@@ -17,77 +17,34 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/sonner';
 
-const schema = z.object({
-  username: z.string().min(1, 'Enter username'),
-  password: z.string().min(1, 'Enter password'),
-});
+const Index = () => {
+  const [activeTab, setActiveTab] = useState('dashboard');
 
-type FormValues = z.infer<typeof schema>;
-
-const Login = () => {
-  const navigate = useNavigate();
-  const auth = useContext(AuthContext);
-  const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: { username: '', password: '' },
-  });
-
-  const mutation = useMutation({
-    mutationFn: auth.login,
-    onSuccess: () => {
-      navigate('/');
-    },
-    onError: (err: Error) => toast.error(err.message),
-  });
-
-  const onSubmit = (values: FormValues) => {
-    mutation.mutate(values);
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return <Dashboard />;
+      case 'posts':
+        return <Posts />;
+      case 'messages':
+        return <DirectMessages />;
+      case 'profile':
+        return <Profile />;
+      case 'notifications':
+        return <Notifications />;
+      case 'voice':
+        return <VoiceCall />;
+      default:
+        return <Dashboard />;
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-      <div className="w-full max-w-sm bg-gray-800 p-6 rounded-md shadow border border-gray-700">
-        <h1 className="text-xl font-bold mb-4">Login</h1>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full" disabled={mutation.isPending}>
-              {mutation.isPending ? 'Logging in...' : 'Login'}
-            </Button>
-            <p className="text-sm text-center">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-blue-400 hover:text-blue-300 underline">
-                Register
-              </Link>
-            </p>
-          </form>
-        </Form>
-      </div>
+    <div className="min-h-screen bg-gray-900 text-white flex">
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <main className="flex-1 flex flex-col">
+        {renderContent()}
+      </main>
     </div>
   );
 };

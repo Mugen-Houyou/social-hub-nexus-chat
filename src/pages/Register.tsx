@@ -17,11 +17,11 @@ import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/sonner';
 
 const schema = z.object({
-  username: z.string().min(1, 'Enter username'),
-  firstname: z.string().min(1, 'Enter first name'),
-  lastname: z.string().min(1, 'Enter last name'),
-  email: z.string().email('Invalid email'),
-  password: z.string().min(1, 'Enter password'),
+  username: z.string().min(1, '아이디를 입력해주세요'),
+  firstname: z.string().min(1, '이름을 입력해주세요'),
+  lastname: z.string().min(1, '성을 입력해주세요'),
+  email: z.string().email('올바른 이메일 형식이 아닙니다'),
+  password: z.string().min(1, '비밀번호를 입력해주세요'),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -42,7 +42,7 @@ const Register = () => {
   const mutation = useMutation({
     mutationFn: registerUser,
     onSuccess: () => {
-      toast.success('Registration successful');
+      toast.success('회원가입이 완료되었습니다');
       navigate('/login');
     },
     onError: (err: Error) => toast.error(err.message),
@@ -55,7 +55,7 @@ const Register = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
       <div className="w-full max-w-sm bg-gray-800 p-6 rounded-md shadow border border-gray-700">
-        <h1 className="text-xl font-bold mb-4">Register</h1>
+        <h1 className="text-xl font-bold mb-4">회원가입</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
@@ -63,7 +63,7 @@ const Register = () => {
               name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>아이디</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -76,7 +76,7 @@ const Register = () => {
               name="firstname"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>First name</FormLabel>
+                  <FormLabel>이름</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -89,7 +89,7 @@ const Register = () => {
               name="lastname"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Last name</FormLabel>
+                  <FormLabel>성</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
@@ -102,7 +102,7 @@ const Register = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>이메일</FormLabel>
                   <FormControl>
                     <Input type="email" {...field} />
                   </FormControl>
@@ -115,7 +115,7 @@ const Register = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>비밀번호</FormLabel>
                   <FormControl>
                     <Input type="password" {...field} />
                   </FormControl>
@@ -124,7 +124,7 @@ const Register = () => {
               )}
             />
             <Button type="submit" className="w-full" disabled={mutation.isPending}>
-              {mutation.isPending ? 'Registering...' : 'Register'}
+              {mutation.isPending ? '가입 중...' : '회원가입'}
             </Button>
           </form>
         </Form>

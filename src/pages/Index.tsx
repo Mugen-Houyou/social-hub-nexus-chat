@@ -4,6 +4,7 @@ import Sidebar from '@/components/Sidebar';
 import Dashboard from '@/components/Dashboard';
 import Posts from '@/components/Posts';
 import DirectMessages from '@/components/DirectMessages';
+import Chat from '@/components/Chat';
 import Profile from '@/components/Profile';
 import Notifications from '@/components/Notifications';
 import VoiceCall from '@/components/VoiceCall';
@@ -19,6 +20,8 @@ const Index = () => {
         return <Posts />;
       case 'messages':
         return <DirectMessages />;
+      case 'chat':
+        return <Chat />;
       case 'profile':
         return <Profile />;
       case 'notifications':

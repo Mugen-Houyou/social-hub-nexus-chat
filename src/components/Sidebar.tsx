@@ -1,5 +1,5 @@
 
-import { Home, MessageSquare, Users, Bell, Phone, User, LogOut, LogIn } from 'lucide-react';
+import { Home, MessageSquare, Users, Bell, Phone, User, LogOut, LogIn, MessageCircle } from 'lucide-react';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '@/context/AuthContext';
@@ -16,6 +16,7 @@ const Sidebar = ({ activeTab, setActiveTab }: SidebarProps) => {
   const menuItems = [
     { id: 'dashboard', icon: Home, label: '대시보드' },
     { id: 'posts', icon: MessageSquare, label: '게시판' },
+    { id: 'chat', icon: MessageCircle, label: '채팅' },
     { id: 'messages', icon: MessageSquare, label: 'DM' },
     { id: 'profile', icon: User, label: '프로필' },
     { id: 'notifications', icon: Bell, label: '알림' },
