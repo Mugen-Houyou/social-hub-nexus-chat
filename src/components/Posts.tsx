@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchBoards, fetchPostsByBoard } from '@/lib/api';
+import { fetchBoards, fetchPostsByBoard, PostSummary } from '@/lib/api';
 import CreatePostDialog from './CreatePostDialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import PostDetailContent from './PostDetailContent';
 
 const Posts = () => {
   const [activeBoard, setActiveBoard] = useState<number | null>(null);
+  const [selectedPost, setSelectedPost] = useState<PostSummary | null>(null);
 
   const boardsQuery = useQuery({
     queryKey: ['boards'],
@@ -61,6 +64,7 @@ const Posts = () => {
           <div
             key={post.id}
             className="bg-gray-800 rounded-lg p-6 hover:bg-gray-750 transition-colors cursor-pointer"
+            onClick={() => setSelectedPost(post)}
           >
             <div className="flex items-start space-x-4">
               <div className="flex-1">
@@ -77,6 +81,22 @@ const Posts = () => {
           </div>
         ))}
       </div>
+
+      <Dialog
+        open={selectedPost !== null}
+        onOpenChange={(open) => {
+          if (!open) setSelectedPost(null);
+        }}
+      >
+        <DialogContent className="max-w-3xl">
+          {selectedPost && (
+            <PostDetailContent
+              boardId={selectedPost.board_id}
+              postId={selectedPost.id}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

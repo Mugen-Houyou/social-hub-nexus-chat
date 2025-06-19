@@ -145,9 +145,14 @@ export interface CreatePostPayload {
   board_id: number;
 }
 
+export interface FileMeta {
+  id: number;
+  filename?: string;
+}
+
 export interface Post extends PostSummary {
   content: string;
-  files: unknown[];
+  files: FileMeta[];
   updated_at: string;
 }
 
@@ -170,6 +175,75 @@ export async function createPost(
 
   if (!response.ok) {
     let message = 'Failed to create post';
+    try {
+      const data = await response.json();
+      message = data.detail ?? message;
+    } catch {
+      // ignore
+    }
+    throw new Error(message);
+  }
+
+  return response.json();
+}
+
+export async function fetchPost(
+  boardId: number,
+  postId: number,
+): Promise<Post> {
+  const response = await fetch(
+    `${API_BASE_URL}/posts/boards/${boardId}/posts/${postId}`,
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch post');
+  }
+
+  return response.json();
+}
+
+export interface Comment {
+  id: number;
+  content: string;
+  depth: number;
+  parent_id: number | null;
+  author: {
+    id: number;
+    username: string;
+  };
+  created_at: string;
+}
+
+export async function fetchComments(postId: number): Promise<Comment[]> {
+  const response = await fetch(`${API_BASE_URL}/posts/${postId}/comments`);
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch comments');
+  }
+
+  return response.json();
+}
+
+export interface CreateCommentPayload {
+  content: string;
+}
+
+export async function createComment(
+  postId: number,
+  payload: CreateCommentPayload,
+  token?: string,
+): Promise<Comment> {
+  const response = await fetch(`${API_BASE_URL}/posts/${postId}/comments`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    let message = 'Failed to create comment';
     try {
       const data = await response.json();
       message = data.detail ?? message;
